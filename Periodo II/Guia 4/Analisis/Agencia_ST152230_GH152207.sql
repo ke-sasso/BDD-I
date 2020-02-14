@@ -1,0 +1,114 @@
+USE master 
+GO
+
+CREATE DATABASE Agencia_ST152230_GH152207
+ON
+(	NAME = Agencia_ST152230_GH152207_dat,
+	FILENAME = 'C:\Analisis\Agencia_MP152217_OL152221.mdf',
+	SIZE =5,
+	MAXSIZE=20,
+	FILEGROWTH=5
+)
+LOG ON
+(	NAME = Agencia_ST152230_GH152207_log,
+	FILENAME = 'C:\Analisis\Agencia_MP152217_OL152221.ldf',
+	SIZE =2,
+	MAXSIZE=10,
+	FILEGROWTH=2
+)
+GO
+USE Agencia_ST152230_GH152207
+GO
+----------------------------------------
+
+CREATE TABLE AGENCIA
+(CodigoAgencia INT NOT NULL IDENTITY,
+Direccion varchar(140) NOT NULL,
+Telefono char(9) NOT NULL,
+Mail varchar(140) NULL,
+CONSTRAINT PK_CodigoAgencia PRIMARY KEY (CodigoAgencia)
+)
+
+CREATE TABLE VUELO
+(CodigoVuelo INT NOT NULL IDENTITY,
+Fecha date NOT NULL,
+Origen varchar(140) NOT NULL,
+Destino varchar(140) NOT NULL,
+Hora time NOT NULL,
+Plazas int NOT NULL
+CONSTRAINT PK_CodigoVuelos PRIMARY KEY (CodigoVuelo)
+)
+
+CREATE TABLE HOTEL
+(CodigoHotel INT NOT NULL IDENTITY,
+Nombre varchar(100) NOT NULL,
+Direccion varchar(140) NOT NULL,
+Telefono char(9) NOT NULL,
+Habitaciones INT NULL,
+IDAgencia INT NOT NULL,
+CONSTRAINT PK_CodigoHotel PRIMARY KEY (CodigoHotel),
+CONSTRAINT FK_HOTEL_AGENCIA FOREIGN KEY (IDAgencia) REFERENCES AGENCIA(CodigoAgencia)
+)
+
+CREATE TABLE CLIENTE
+(CodigoCliente INT NOT NULL IDENTITY,
+Nombre varchar(100) NOT NULL,
+Apellido varchar(100) NOT NULL,
+DUI char(10) NOT NULL,
+Direccion varchar(140) NOT NULL,
+Telefono char(9) NOT NULL,
+Mail varchar(140) NULL,
+IDAgencia INT NOT NULL,
+IDVuelo INT NOT NULL,
+CONSTRAINT PK_CodigoCliente PRIMARY KEY (CodigoCliente),
+CONSTRAINT FK_CLIENTE_AGENCIA FOREIGN KEY (IDAgencia) REFERENCES AGENCIA(CodigoAgencia),
+CONSTRAINT FK_CLIENTE_VUELO FOREIGN KEY (IDVuelo) REFERENCES VUELO(CodigoVuelo),
+)
+
+CREATE TABLE CONTRATOS
+(CodigoContrato INT NOT NULL IDENTITY,
+IDAgencia INT NOT NULL,
+IDVuelo INT NOT NULL,
+Fecha date NOT NULL,
+CONSTRAINT PK_CodigoContrato PRIMARY KEY (CodigoContrato),
+CONSTRAINT FK_CONTRATO_AGENCIA FOREIGN KEY (IDAgencia) REFERENCES AGENCIA(CodigoAgencia),
+CONSTRAINT FK_CONTRATO_VUELO FOREIGN KEY (IDVuelo) REFERENCES VUELO(CodigoVuelo),
+)
+
+---------------------------------------------------
+
+ALTER TABLE VUELO
+ADD CONSTRAINT DF_Fecha
+DEFAULT getdate() FOR Fecha;
+GO
+ALTER TABLE CONTRATOS
+ADD CONSTRAINT DF_Fecha_C
+DEFAULT getdate() FOR Fecha;
+GO
+ALTER TABLE CLIENTE
+ADD CONSTRAINT UQ_DUI
+UNIQUE(DUI)
+GO
+ALTER TABLE AGENCIA
+ADD CONSTRAINT CK_Telefono
+CHECK (Telefono like '[2||6||7]{1}[0-9]{3}-[0-9]{4}')
+GO
+ALTER TABLE HOTEL
+ADD CONSTRAINT CK_Telefono_H
+CHECK (Telefono like '[2||6||7]{1}[0-9]{3}-[0-9]{4}')
+GO
+ALTER TABLE HOTEL
+ADD CONSTRAINT CK_Telefono_C
+CHECK (Telefono like '[2||6||7]{1}[0-9]{3}-[0-9]{4}')
+GO
+ALTER TABLE CLIENTE
+ADD CONSTRAINT CK_DUI
+CHECK (DUI like '[0-9]{8}-[0-9]{1}')
+GO
+
+
+
+
+
+
+

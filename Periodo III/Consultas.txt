@@ -1,0 +1,36 @@
+Seleccionar todos los campos de la tabla Order Details 
+donde el campo OrderID tenga alguno de los siguientes datos: 10248, 10255 y 10270
+
+select * from [Order Details]
+where OrderID in (10248,10255,10270)
+go
+-----------------------------------------------------------
+Seleccionar el campo CompanyName de la tabla Customers donde el 
+dato almacenado en ese campo comience con cualquiera de las letras a,b o c
+
+select CompanyName from Customers
+where CompanyName like '[a-c]%'
+go
+------------------------------------------------------------
+Seleccionar las primeras 3 mejores ventas de la tabla Order Details
+
+select top 3 OrderID, (unitprice*quantity) as [Ventas Total] from [Order Details]
+order by [Ventas Total] desc
+go
+
+--------------------------------------------------------
+Seleccionar las tres mejores ventas, utilizando la instrucción WITH TIES se permitirá 
+incluir en los resultados los registros que tengan el mismo valor en el cálculo de la Venta Total
+
+select top 3 with ties OrderID, (unitprice*quantity) as [Ventas Total] from [Order Details]
+order by [Ventas Total] desc
+go
+
+------------------------------------------------------------
+Seleccionar el 25% del total de registros de las ventas las cuales están 
+almacenadas en la tabla Order Details
+
+select top 25 percent OrderID, (unitprice*quantity) as [Ventas Total]
+from [Order Details]
+order by [Ventas Total] desc
+go

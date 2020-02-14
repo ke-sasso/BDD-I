@@ -1,0 +1,110 @@
+CREATE DATABASE Control_de_Ventas
+GO
+
+USE Control_de_Ventas
+GO
+
+
+----------------------   TABLAS   ----------------
+
+-- TABLA PRODUCTO --
+CREATE TABLE Producto(
+Id_Producto			CHAR(4)			PRIMARY KEY,
+Nombre				VARCHAR(50)
+);
+GO
+
+-- TABLA PROVEEDOR --
+CREATE TABLE Proveedor(
+Id_Proveedor		CHAR(4)			PRIMARY KEY,
+Nombre				VARCHAR(50)
+);
+GO
+
+
+-- TABLA CATALOGO --
+CREATE TABLE Catalogo(
+Id_ProdCat			CHAR(4)			PRIMARY KEY,
+Id_Producto			CHAR(4),
+Id_Proveedor		CHAR(4)	,
+);
+GO
+--PRODUCTO RELACIONADO CON CATALOGO
+ALTER TABLE Catalogo
+ADD CONSTRAINT FK_PRODUC FOREIGN KEY (Id_Producto) REFERENCES Producto(Id_Producto);
+
+-- PROVEEDOR RELACIONADO CON CATALOGO
+ALTER TABLE Catalogo
+ADD CONSTRAINT FK_PROVE FOREIGN KEY (Id_Proveedor) REFERENCES Proveedor(Id_Proveedor);
+GO
+
+
+-- TABLA BODEGA --
+CREATE TABLE Bodega(
+Id_ProdBod			CHAR(4)			PRIMARY KEY,
+Id_ProdCat			CHAR(4),
+Fecha				DATE,
+Precio_Compra		MONEY,
+Precio_Venta		MONEY,
+Existencia			INT
+);
+GO
+-- CATALOGO RELACIONADO CON BODEGA
+ALTER TABLE Bodega
+ADD CONSTRAINT FK_Cat FOREIGN KEY (Id_ProdCat) REFERENCES Catalogo(Id_ProdCat);
+GO
+
+
+-- TABLA CLIENTE --
+CREATE TABLE Cliente(
+Id_Cliente			CHAR(4)			PRIMARY KEY,
+Nombre				VARCHAR(30),
+Apellidos			VARCHAR(30)
+);
+GO
+
+
+-- TABLA  VENDEDOR --
+CREATE TABLE Vendedor(
+Id_Vendedor			CHAR(4)		PRIMARY KEY,
+Nombres				VARCHAR(30),
+Apellidos			VARCHAR(30)
+);
+GO
+
+
+-- TABLA VENTA --
+CREATE TABLE Venta(
+Id_Venta			CHAR(4)		PRIMARY KEY,
+Fecha				DATE,
+Id_Cliente			CHAR(4),
+Id_Vendedor			CHAR(4)
+);
+GO
+-- CLIENTE RELACIONADA CON VENTA
+ALTER TABLE Venta
+ADD CONSTRAINT FK_CLIENTE FOREIGN KEY (Id_Cliente) REFERENCES Cliente(Id_Cliente);
+GO
+
+-- VENDEDOR RELACIONADO CON VENTA
+ALTER TABLE Venta
+ADD CONSTRAINT FK_VENDEDOR FOREIGN KEY (Id_Vendedor) REFERENCES Vendedor(Id_Vendedor);
+GO
+
+
+-- TABLA DETALLE VENTA_BODEGA
+CREATE TABLE Detalle_VentaBodega(
+Id_Venta			CHAR(4),
+Id_ProdBod			CHAR(4),
+Unidades			INT,
+SubTotal			MONEY
+);
+GO
+-- VENTAS RELACIONADA CON DETALLE VENTABODEGA
+ALTER TABLE Detalle_VentaBodega
+ADD CONSTRAINT FK_VENTA FOREIGN KEY (Id_Venta) REFERENCES Venta(Id_Venta);
+GO
+-- BODEGA RELACIONADO CON DETALLE VENTABODEGA
+ALTER TABLE Detalle_VentaBodega
+ADD CONSTRAINT FK_BODEGA FOREIGN KEY (Id_ProdBod) REFERENCES Bodega(Id_ProdBod);
+GO
